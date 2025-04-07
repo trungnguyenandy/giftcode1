@@ -18,22 +18,36 @@
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
         input {
             padding: 10px;
-            width: 70%;
-            margin-right: 10px;
+            width: 50%; /* Giảm độ rộng ô input */
             border: 1px solid #ddd;
             border-radius: 4px;
+            flex-grow: 1;
         }
         button {
             padding: 10px 20px;
-            background-color: #4285f4;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            white-space: nowrap;
         }
-        button:hover {
+        #pasteBtn {
+            background-color: #ff9800;
+        }
+        #pasteBtn:hover {
+            background-color: #f57c00;
+        }
+        #submitBtn {
+            background-color: #4285f4;
+        }
+        #submitBtn:hover {
             background-color: #3367d6;
         }
         #message {
@@ -51,53 +65,63 @@
 <body>
     <div class="container">
         <h1>Thêm Gift Mới</h1>
-        <div>
+        <div class="input-group">
             <input type="text" id="giftCode" placeholder="Nhập mã gift...">
-            <button onclick="addGift()">Nhập Gift</button>
+            <button id="pasteBtn">Dán</button>
+            <button id="submitBtn" onclick="addGift()">Nhập Gift</button>
         </div>
         <div id="message"></div>
         <div id="error"></div>
     </div>
 
     <script>
+        // Thêm chức năng dán tự động
+        document.getElementById('pasteBtn').addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('giftCode').value = text.trim();
+            } catch (err) {
+                document.getElementById('error').textContent = 'Không thể đọc clipboard';
+                console.error('Lỗi khi dán:', err);
+            }
+        });
+
         function addGift() {
-  const giftCode = document.getElementById('giftCode').value.trim();
-  const messageDiv = document.getElementById('message');
-  const errorDiv = document.getElementById('error');
-  
-  // Reset messages
-  messageDiv.textContent = '';
-  errorDiv.textContent = '';
-  
-  // Validate input
-  if (!giftCode) {
-    errorDiv.textContent = 'Vui lòng nhập mã gift!';
-    return;
-  }
-  
-  messageDiv.textContent = 'Đang xử lý...';
-  
-  const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec';
-  
-  // Sử dụng fetch với mode 'no-cors'
-  fetch(scriptUrl, {
-    method: 'POST',
-    mode: 'no-cors', // Quan trọng: bỏ qua CORS
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({code: giftCode}),
-  })
-  .then(response => {
-    // Vì dùng no-cors nên response sẽ limited
-    messageDiv.textContent = 'Tiền đã về...';
-    document.getElementById('giftCode').value = '';
-  })
-  .catch(error => {
-    errorDiv.textContent = 'Lỗi khi gửi yêu cầu';
-    console.error('Error:', error);
-  });
-}
+            const giftCode = document.getElementById('giftCode').value.trim();
+            const messageDiv = document.getElementById('message');
+            const errorDiv = document.getElementById('error');
+            
+            // Reset messages
+            messageDiv.textContent = '';
+            errorDiv.textContent = '';
+            
+            // Validate input
+            if (!giftCode) {
+                errorDiv.textContent = 'Vui lòng nhập mã gift!';
+                return;
+            }
+            
+            messageDiv.textContent = 'Đang xử lý...';
+            
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec';
+            
+            fetch(scriptUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({code: giftCode}),
+            })
+            .then(response => {
+                messageDiv.textContent = 'Tiền đã về...';
+                document.getElementById('giftCode').value = '';
+            })
+            .catch(error => {
+                errorDiv.textContent = 'Lỗi khi gửi yêu cầu';
+                console.error('Error:', error);
+            });
+        }
         
         // Cho phép nhấn Enter để submit
         document.getElementById('giftCode').addEventListener('keypress', function(e) {
