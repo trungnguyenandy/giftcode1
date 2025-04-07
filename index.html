@@ -3,278 +3,362 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Quản Lý Gift Code</title>
+    <title>Toptop by Trung Nguyen</title>
     <style>
-        :root {
-            --primary: #2563eb;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --warning: #d97706;
-            --muted: #6b7280;
-        }
-        
         body {
-            font-family: 'Inter', system-ui, sans-serif;
-            line-height: 1.5;
-            color: #1f2937;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             max-width: 800px;
             margin: 0 auto;
-            padding: 1rem;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
         }
-        
-        .card {
-            background: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
         }
-        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
         .input-group {
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        input {
-            flex: 1;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-        }
-        
-        button {
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-            display: inline-flex;
+            gap: 10px;
+            margin-bottom: 20px;
             align-items: center;
-            gap: 0.5rem;
         }
-        
-        .btn-primary {
-            background: var(--primary);
+        input {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            flex-grow: 1;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        button {
+            padding: 12px 20px;
             color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
         }
-        
-        .btn-success {
-            background: var(--success);
-            color: white;
+        #pasteBtn {
+            background-color: #e67e22;
         }
-        
-        .btn-danger {
-            background: var(--danger);
-            color: white;
+        #pasteBtn:hover {
+            background-color: #d35400;
+            transform: translateY(-2px);
         }
-        
+        #submitBtn {
+            background-color: #3498db;
+        }
+        #submitBtn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        .account-btn {
+            background-color: #2ecc71;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .account-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        .copy-btn {
+            background-color: #9b59b6;
+            padding: 8px 12px;
+            margin-left: 10px;
+        }
+        .copy-btn:hover {
+            background-color: #8e44ad;
+            transform: translateY(-2px);
+        }
+        .mark-used-btn {
+            background-color: #e74c3c;
+            width: 100%;
+        }
+        .mark-used-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        .account-display {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .account-field {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .account-field label {
+            font-weight: bold;
+            min-width: 80px;
+            color: #2c3e50;
+        }
+        .account-field span {
+            flex-grow: 1;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        #message, #accountMessage {
+            color: #27ae60;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+        #error, #accountError {
+            color: #e74c3c;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
         .loading {
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
         }
-        
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Quản Lý Gift Code</h2>
+    <!-- Phần thêm gift code -->
+    <div class="container">
+        <h1>Thêm Gift Mới</h1>
         <div class="input-group">
             <input type="text" id="giftCode" placeholder="Nhập mã gift...">
-            <button id="submitBtn" class="btn-primary">
-                <span id="submitLoading" class="loading" hidden></span>
-                Thêm Gift
-            </button>
+            <button id="pasteBtn">Dán</button>
+            <button id="submitBtn" onclick="addGift()">Nhập Gift</button>
         </div>
         <div id="message"></div>
+        <div id="error"></div>
     </div>
 
-    <div class="card">
-        <h2>Quản Lý Tài Khoản</h2>
-        <button id="getAccountBtn" class="btn-success">
-            <span id="accountLoading" class="loading" hidden></span>
-            Lấy Tài Khoản
+    <!-- Phần quản lý tài khoản -->
+    <div class="container">
+        <h1>Quản lý Tài khoản</h1>
+        <button class="account-btn" onclick="getAvailableAccount()" id="getAccountBtn">
+            <span id="loadingAccount" style="display:none;" class="loading"></span>
+            Lấy Tài khoản Khả dụng
         </button>
         
-        <div id="accountDisplay" hidden>
-            <div style="margin: 1rem 0;">
-                <div>Tài khoản: <span id="usernameDisplay"></span></div>
-                <div>Mật khẩu: <span id="passwordDisplay"></span></div>
+        <div id="accountDisplay" class="account-display">
+            <div class="account-field">
+                <label>Tài khoản:</label>
+                <span id="usernameDisplay"></span>
+                <button class="copy-btn" onclick="copyToClipboard('usernameDisplay')">Copy</button>
             </div>
-            <button id="markUsedBtn" class="btn-danger">
-                <span id="markUsedLoading" class="loading" hidden></span>
-                Đánh Dấu Đã Dùng
+            <div class="account-field">
+                <label>Mật khẩu:</label>
+                <span id="passwordDisplay"></span>
+                <button class="copy-btn" onclick="copyToClipboard('passwordDisplay')">Copy</button>
+            </div>
+            <button class="mark-used-btn" onclick="markAsUsed()" id="markUsedBtn">
+                <span id="loadingMarkUsed" style="display:none;" class="loading"></span>
+                Đánh dấu đã dùng
             </button>
         </div>
+        
+        <div id="accountMessage"></div>
+        <div id="accountError"></div>
     </div>
 
     <script>
-        // Cấu hình
-        const API = {
-            endpoint: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
-            retryDelay: 1000,
-            maxRetries: 3
-        };
+        // Biến lưu trữ thông tin tài khoản hiện tại
+        let currentAccount = null;
         
-        // State
-        const state = {
-            currentAccount: null,
-            isProcessing: false
-        };
-        
-        // DOM Elements
-        const el = {
-            giftCode: document.getElementById('giftCode'),
-            submitBtn: document.getElementById('submitBtn'),
-            submitLoading: document.getElementById('submitLoading'),
-            message: document.getElementById('message'),
-            getAccountBtn: document.getElementById('getAccountBtn'),
-            accountLoading: document.getElementById('accountLoading'),
-            accountDisplay: document.getElementById('accountDisplay'),
-            usernameDisplay: document.getElementById('usernameDisplay'),
-            passwordDisplay: document.getElementById('passwordDisplay'),
-            markUsedBtn: document.getElementById('markUsedBtn'),
-            markUsedLoading: document.getElementById('markUsedLoading')
-        };
-        
-        // ========== CORE FUNCTIONS ==========
-        async function callAPI(action, params = {}, retryCount = 0) {
+        // ========== PHẦN GIFT CODE ==========
+        document.getElementById('pasteBtn').addEventListener('click', async () => {
             try {
-                const url = new URL(API.endpoint);
-                url.searchParams.append('action', action);
-                Object.entries(params).forEach(([key, value]) => {
-                    if (value !== undefined) {
-                        url.searchParams.append(key, value);
-                    }
-                });
-                
-                // Thêm cache buster
-                url.searchParams.append('_', Date.now());
-                
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: { 'Accept': 'application/json' }
-                });
-                
-                if (!response.ok) {
-                    if (response.status === 403 && retryCount < API.maxRetries) {
-                        await new Promise(r => setTimeout(r, API.retryDelay));
-                        return callAPI(action, params, retryCount + 1);
-                    }
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-                
-                return data;
-                
-            } catch (error) {
-                console.error(`API call failed (${action}):`, error);
-                throw error;
+                const text = await navigator.clipboard.readText();
+                document.getElementById('giftCode').value = text.trim();
+            } catch (err) {
+                showError('Không thể đọc clipboard', 'error');
+                console.error('Lỗi khi dán:', err);
             }
-        }
-        
-        function showMessage(message, isError = false) {
-            el.message.textContent = message;
-            el.message.style.color = isError ? 'var(--danger)' : 'var(--success)';
-            setTimeout(() => el.message.textContent = '', 3000);
-        }
-        
-        function toggleLoading(button, isLoading) {
-            const loadingEl = button.querySelector('.loading');
-            button.disabled = isLoading;
-            loadingEl.hidden = !isLoading;
-            state.isProcessing = isLoading;
-        }
-        
-        // ========== FEATURE FUNCTIONS ==========
-        async function addGift() {
-            const giftCode = el.giftCode.value.trim();
+        });
+
+        function addGift() {
+            const giftCode = document.getElementById('giftCode').value.trim();
+            const messageDiv = document.getElementById('message');
+            const errorDiv = document.getElementById('error');
+            
+            clearMessages();
+            
             if (!giftCode) {
-                showMessage('Vui lòng nhập mã gift', true);
+                showError('Vui lòng nhập mã gift!', 'error');
                 return;
             }
             
-            toggleLoading(el.submitBtn, true);
+            showMessage('Đang xử lý...', 'message');
             
-            try {
-                await callAPI('addGift', { code: giftCode });
-                showMessage('Thêm gift thành công!');
-                el.giftCode.value = '';
-            } catch (error) {
-                showMessage(`Lỗi: ${error.message}`, true);
-            } finally {
-                toggleLoading(el.submitBtn, false);
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec';
+            
+            fetch(scriptUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({code: giftCode}),
+            })
+            .then(response => {
+                showMessage('Tiền đã về...', 'message');
+                document.getElementById('giftCode').value = '';
+            })
+            .catch(error => {
+                showError('Lỗi khi gửi yêu cầu', 'error');
+                console.error('Error:', error);
+            });
+        }
+        
+        // ========== PHẦN TÀI KHOẢN ==========
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showMessage('Đã sao chép vào clipboard!', 'accountMessage');
+            });
+        }
+        
+        function getAvailableAccount() {
+            const btn = document.getElementById('getAccountBtn');
+            const loading = document.getElementById('loadingAccount');
+            
+            btn.disabled = true;
+            loading.style.display = 'inline-block';
+            clearAccountMessages();
+            showMessage('Đang tìm tài khoản khả dụng...', 'accountMessage');
+            
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec?action=getAccount';
+            
+            fetch(scriptUrl)
+            .then(response => {
+                if (!response.ok) throw new Error('Lỗi kết nối');
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    currentAccount = data.account;
+                    document.getElementById('usernameDisplay').textContent = currentAccount.username;
+                    document.getElementById('passwordDisplay').textContent = currentAccount.password;
+                    document.getElementById('accountDisplay').style.display = 'block';
+                    showMessage('Đã tìm thấy tài khoản khả dụng', 'accountMessage');
+                } else {
+                    throw new Error(data.message || 'Không có tài khoản khả dụng');
+                }
+            })
+            .catch(error => {
+                showError(error.message, 'accountError');
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                btn.disabled = false;
+                loading.style.display = 'none';
+            });
+        }
+        
+        function markAsUsed() {
+            if (!currentAccount) return;
+            
+            const btn = document.getElementById('markUsedBtn');
+            const loading = document.getElementById('loadingMarkUsed');
+            
+            btn.disabled = true;
+            loading.style.display = 'inline-block';
+            clearAccountMessages();
+            showMessage('Đang cập nhật trạng thái...', 'accountMessage');
+            
+            const scriptUrl = `https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec?action=markUsed&row=${currentAccount.row}`;
+            
+            fetch(scriptUrl)
+            .then(response => {
+                if (!response.ok) throw new Error('Lỗi kết nối');
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    showMessage('Đã đánh dấu tài khoản đã sử dụng', 'accountMessage');
+                    document.getElementById('accountDisplay').style.display = 'none';
+                    currentAccount = null;
+                } else {
+                    throw new Error(data.message || 'Lỗi khi cập nhật');
+                }
+            })
+            .catch(error => {
+                showError(error.message, 'accountError');
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                btn.disabled = false;
+                loading.style.display = 'none';
+            });
+        }
+        
+        // ========== HÀM TIỆN ÍCH ==========
+        function showMessage(message, type) {
+            const element = document.getElementById(type);
+            element.textContent = message;
+            element.style.display = 'block';
+            if (type.includes('Error')) {
+                element.style.backgroundColor = '#fdecea';
+            } else {
+                element.style.backgroundColor = '#e8f5e9';
             }
         }
         
-        async function getAccount() {
-            toggleLoading(el.getAccountBtn, true);
-            
-            try {
-                const { account } = await callAPI('getAccount');
-                
-                state.currentAccount = account;
-                el.usernameDisplay.textContent = account.username;
-                el.passwordDisplay.textContent = account.password;
-                el.accountDisplay.hidden = false;
-                
-                showMessage('Lấy tài khoản thành công');
-            } catch (error) {
-                showMessage(`Lỗi: ${error.message}`, true);
-            } finally {
-                toggleLoading(el.getAccountBtn, false);
-            }
+        function showError(message, type) {
+            const element = document.getElementById(type);
+            element.textContent = message;
+            element.style.display = 'block';
+            element.style.backgroundColor = '#fdecea';
         }
         
-        async function markUsed() {
-            if (!state.currentAccount) return;
-            
-            toggleLoading(el.markUsedBtn, true);
-            
-            try {
-                await callAPI('markUsed', { row: state.currentAccount.row });
-                showMessage('Đã đánh dấu tài khoản đã dùng');
-                el.accountDisplay.hidden = true;
-                state.currentAccount = null;
-            } catch (error) {
-                showMessage(`Lỗi: ${error.message}`, true);
-            } finally {
-                toggleLoading(el.markUsedBtn, false);
-            }
+        function clearMessages() {
+            document.getElementById('message').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
         }
         
-        // ========== EVENT LISTENERS ==========
-        el.submitBtn.addEventListener('click', addGift);
-        el.giftCode.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') addGift();
+        function clearAccountMessages() {
+            document.getElementById('accountMessage').style.display = 'none';
+            document.getElementById('accountError').style.display = 'none';
+        }
+        
+        // Cho phép nhấn Enter để submit gift code
+        document.getElementById('giftCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addGift();
+            }
         });
-        
-        el.getAccountBtn.addEventListener('click', getAccount);
-        el.markUsedBtn.addEventListener('click', markUsed);
-        
-        // Kiểm tra kết nối khi tải trang
-        (async function init() {
-            try {
-                await callAPI('test');
-                console.log('API connected successfully');
-            } catch (error) {
-                showMessage('Không thể kết nối đến hệ thống', true);
-            }
-        })();
     </script>
 </body>
 </html>
