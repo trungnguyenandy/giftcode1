@@ -3,264 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Gift Code</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <title>Gift Code Manager</title>
     <style>
         :root {
-            --primary: #4285F4;
-            --success: #34A853;
-            --error: #EA4335;
-            --warning: #FBBC05;
+            --primary: #4285f4;
+            --success: #34a853;
+            --error: #ea4335;
         }
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: Arial, sans-serif;
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #F8F9FA;
         }
         .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #202124;
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: 500;
-        }
-        .input-group {
-            margin-bottom: 20px;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         input {
             width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #DADCE0;
-            border-radius: 8px;
-            font-size: 16px;
-            box-sizing: border-box;
-            transition: all 0.3s;
-        }
-        input:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(66,133,244,0.2);
-        }
-        input.error {
-            border-color: var(--error);
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
         button {
-            background-color: var(--primary);
+            background: var(--primary);
             color: white;
             border: none;
             padding: 12px 20px;
             width: 100%;
-            border-radius: 8px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        button:hover {
-            background-color: #3367D6;
-        }
-        button:disabled {
-            background-color: #CCCCCC;
-            cursor: not-allowed;
-        }
-        .spinner {
-            display: none;
-            width: 18px;
-            height: 18px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
         #message {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            display: none;
-            line-height: 1.6;
-        }
-        .success {
-            background-color: rgba(52,168,83,0.1);
-            color: var(--success);
-            border: 1px solid rgba(52,168,83,0.3);
-        }
-        .error {
-            background-color: rgba(234,67,53,0.1);
-            color: var(--error);
-            border: 1px solid rgba(234,67,53,0.3);
-        }
-        .loading {
-            background-color: rgba(251,188,5,0.1);
-            color: var(--warning);
-            border: 1px solid rgba(251,188,5,0.3);
-        }
-        .success-icon, .error-icon {
-            margin-right: 8px;
-            font-size: 18px;
-        }
-        .details {
-            margin-top: 10px;
-            font-size: 14px;
-            background: rgba(0,0,0,0.05);
-            padding: 8px;
+            margin-top: 15px;
+            padding: 12px;
             border-radius: 4px;
+            display: none;
         }
+        .success { background: rgba(52,168,83,0.2); color: var(--success); }
+        .error { background: rgba(234,67,53,0.2); color: var(--error); }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Thêm Gift Code Mới</h1>
-        <div class="input-group">
-            <input type="text" id="giftInput" placeholder="Nhập gift code..." autocomplete="off">
-        </div>
-        <button id="submitBtn">
-            <span id="btnText">Thêm Gift</span>
-            <div class="spinner" id="spinner"></div>
-        </button>
+        <h1>Thêm Gift Code</h1>
+        <input type="text" id="giftInput" placeholder="Nhập gift code...">
+        <button id="submitBtn">Thêm Gift</button>
         <div id="message"></div>
     </div>
 
     <script>
-        // URL Web App - Thay bằng URL triển khai của bạn
+        // URL triển khai GAS
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzBVepXFB2A3K4Ti3EVXG0bC08H2UPj7cvC5L-lIUuB/exec';
         
-        // DOM Elements
-        const giftInput = document.getElementById('giftInput');
-        const submitBtn = document.getElementById('submitBtn');
-        const btnText = document.getElementById('btnText');
-        const spinner = document.getElementById('spinner');
-        const messageEl = document.getElementById('message');
-        
-        // Xử lý sự kiện click
-        submitBtn.addEventListener('click', addGift);
-        
-        // Xử lý sự kiện nhấn Enter
-        giftInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                addGift();
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            const gift = document.getElementById('giftInput').value.trim();
+            const messageEl = document.getElementById('message');
+            
+            // Reset UI
+            messageEl.style.display = 'none';
+            
+            // Validate
+            if (!gift) {
+                showMessage('Vui lòng nhập gift code!', 'error');
+                return;
+            }
+            
+            try {
+                // Phương thức chính: POST JSON
+                let response = await fetchWithTimeout(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ gift: gift })
+                }, 5000);
+                
+                // Xử lý redirect của GAS
+                if (response.redirected) {
+                    response = await fetch(response.url);
+                }
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showMessage(`✅ ${data.message}`, 'success');
+                } else {
+                    throw new Error(data.message || 'Lỗi không xác định');
+                }
+                
+            } catch (error) {
+                console.error('Request failed:', error);
+                
+                // Phương thức dự phòng: GET với query params
+                try {
+                    const fallbackResponse = await fetchWithTimeout(
+                        `${WEB_APP_URL}?gift=${encodeURIComponent(gift)}`,
+                        { method: 'GET' },
+                        5000
+                    );
+                    
+                    const fallbackData = await fallbackResponse.json();
+                    showMessage(`⚠️ Sử dụng phương thức dự phòng: ${fallbackData.message}`, 
+                              fallbackData.status === 'success' ? 'success' : 'error');
+                              
+                } catch (fallbackError) {
+                    showMessage(`❌ Lỗi nghiêm trọng: ${fallbackError.message}`, 'error');
+                }
             }
         });
         
-        async function addGift() {
-            const gift = giftInput.value.trim();
-            
-            // Reset trạng thái
-            resetUI();
-            
-            // Validate input
-            if (!validateInput(gift)) return;
-            
-            // Hiển thị trạng thái loading
-            setLoading(true);
+        // Hàm fetch với timeout
+        async function fetchWithTimeout(url, options, timeout) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
             
             try {
-                // Gửi request đến Google Apps Script
-                const response = await sendRequest(gift);
-                
-                // Xử lý kết quả
-                if (response.status === 'success') {
-                    showSuccess(response);
-                    giftInput.value = ''; // Clear input
-                } else {
-                    throw new Error(response.message || 'Lỗi không xác định từ server');
-                }
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                return response;
             } catch (error) {
-                showError(error);
-            } finally {
-                setLoading(false);
+                clearTimeout(timeoutId);
+                throw new Error(`Request timeout after ${timeout}ms`);
             }
         }
         
-        function resetUI() {
-            messageEl.style.display = 'none';
-            giftInput.classList.remove('error');
-        }
-        
-        function validateInput(gift) {
-            if (!gift) {
-                showMessage('⚠️ Vui lòng nhập gift code!', 'error');
-                giftInput.classList.add('error');
-                giftInput.focus();
-                return false;
-            }
-            return true;
-        }
-        
-        function setLoading(isLoading) {
-            submitBtn.disabled = isLoading;
-            btnText.textContent = isLoading ? 'Đang xử lý...' : 'Thêm Gift';
-            spinner.style.display = isLoading ? 'block' : 'none';
-            
-            if (isLoading) {
-                showMessage('⏳ Đang kết nối với hệ thống...', 'loading');
-            }
-        }
-        
-        async function sendRequest(gift) {
-            const response = await fetch(WEB_APP_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ gift }),
-                redirect: 'follow'
-            });
-            
-            // Xử lý redirect của Google Apps Script
-            if (response.redirected) {
-                const realResponse = await fetch(response.url);
-                return await realResponse.json();
-            }
-            return await response.json();
-        }
-        
-        function showSuccess(response) {
-            const details = `
-                <div class="details">
-                    <strong>Mã:</strong> ${response.data.gift}<br>
-                    <strong>Ngày:</strong> ${response.data.date}<br>
-                    <strong>Giờ:</strong> ${response.data.time}
-                </div>
-            `;
-            showMessage(`✅ ${response.message}${details}`, 'success');
-        }
-        
-        function showError(error) {
-            console.error('Error:', error);
-            
-            let errorMessage = error.message;
-            if (error.message.includes('Failed to fetch')) {
-                errorMessage = '❌ Không thể kết nối đến server. Vui lòng:<br>'
-                    + '1. Kiểm tra kết nối mạng<br>'
-                    + '2. Thử lại sau';
-            }
-            
-            showMessage(errorMessage, 'error');
-        }
-        
+        // Hiển thị thông báo
         function showMessage(text, type) {
-            messageEl.innerHTML = text;
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
             messageEl.className = type;
             messageEl.style.display = 'block';
-            
-            // Tự động ẩn thông báo sau 5 giây (trừ khi đang loading)
-            if (type !== 'loading') {
-                setTimeout(() => {
-                    messageEl.style.display = 'none';
-                }, 5000);
-            }
         }
     </script>
 </body>
