@@ -3,361 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toptop by Trung Nguyen</title>
+    <title>Quản Lý Gift Code & Tài Khoản</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Roboto', sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: #f8f9fa;
+            color: #343a40;
         }
         .container {
             background-color: white;
             border-radius: 10px;
             padding: 25px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             margin-bottom: 25px;
         }
         h1 {
             color: #2c3e50;
-            margin-bottom: 20px;
             text-align: center;
+            margin-bottom: 25px;
         }
         .input-group {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
-            align-items: center;
+            flex-wrap: wrap;
         }
         input {
-            padding: 12px;
-            border: 2px solid #ddd;
+            padding: 12px 15px;
+            border: 2px solid #dee2e6;
             border-radius: 6px;
             flex-grow: 1;
             font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        input:focus {
-            border-color: #3498db;
-            outline: none;
+            min-width: 200px;
         }
         button {
             padding: 12px 20px;
-            color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            white-space: nowrap;
-            font-weight: bold;
-            font-size: 16px;
+            font-weight: 500;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        #pasteBtn {
-            background-color: #e67e22;
+        .btn-primary {
+            background-color: #4285f4;
+            color: white;
         }
-        #pasteBtn:hover {
-            background-color: #d35400;
+        .btn-primary:hover {
+            background-color: #3367d6;
             transform: translateY(-2px);
         }
-        #submitBtn {
-            background-color: #3498db;
+        .btn-secondary {
+            background-color: #34a853;
+            color: white;
         }
-        #submitBtn:hover {
-            background-color: #2980b9;
+        .btn-secondary:hover {
+            background-color: #2d9249;
             transform: translateY(-2px);
         }
-        .account-btn {
-            background-color: #2ecc71;
-            width: 100%;
-            margin-bottom: 15px;
+        .btn-danger {
+            background-color: #ea4335;
+            color: white;
         }
-        .account-btn:hover {
-            background-color: #27ae60;
+        .btn-danger:hover {
+            background-color: #d33426;
             transform: translateY(-2px);
         }
-        .copy-btn {
-            background-color: #9b59b6;
-            padding: 8px 12px;
-            margin-left: 10px;
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
         }
-        .copy-btn:hover {
-            background-color: #8e44ad;
-            transform: translateY(-2px);
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-        .mark-used-btn {
-            background-color: #e74c3c;
-            width: 100%;
+        .message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            display: none;
         }
-        .mark-used-btn:hover {
-            background-color: #c0392b;
-            transform: translateY(-2px);
+        .success {
+            background-color: #e6f4ea;
+            color: #34a853;
+            border: 1px solid #b7e1c1;
         }
-        .account-display {
-            background-color: #ecf0f1;
+        .error {
+            background-color: #fce8e6;
+            color: #d33426;
+            border: 1px solid #f4b9b2;
+        }
+        .account-info {
+            background-color: #f8f9fa;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
             display: none;
         }
-        .account-field {
+        .info-row {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
         }
-        .account-field label {
+        .info-label {
             font-weight: bold;
-            min-width: 80px;
-            color: #2c3e50;
+            min-width: 100px;
+            color: #5f6368;
         }
-        .account-field span {
+        .info-value {
             flex-grow: 1;
-            padding: 8px;
+            padding: 8px 12px;
             background: white;
             border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        #message, #accountMessage {
-            color: #27ae60;
-            font-weight: bold;
-            padding: 10px;
-            border-radius: 4px;
-            text-align: center;
-            margin-top: 15px;
-            display: none;
-        }
-        #error, #accountError {
-            color: #e74c3c;
-            font-weight: bold;
-            padding: 10px;
-            border-radius: 4px;
-            text-align: center;
-            margin-top: 15px;
-            display: none;
-        }
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
+            border: 1px solid #dadce0;
             margin-right: 10px;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <!-- Phần thêm gift code -->
     <div class="container">
-        <h1>Thêm Gift Mới</h1>
+        <h1>Quản Lý Gift Code</h1>
         <div class="input-group">
             <input type="text" id="giftCode" placeholder="Nhập mã gift...">
-            <button id="pasteBtn">Dán</button>
-            <button id="submitBtn" onclick="addGift()">Nhập Gift</button>
+            <button class="btn-primary" onclick="addGift()" id="submitBtn">
+                <span id="submitLoading" class="loading" style="display:none;"></span>
+                Nhập Gift
+            </button>
         </div>
-        <div id="message"></div>
-        <div id="error"></div>
+        <div id="message" class="message"></div>
+        <div id="error" class="message error"></div>
     </div>
 
-    <!-- Phần quản lý tài khoản -->
     <div class="container">
-        <h1>Quản lý Tài khoản</h1>
-        <button class="account-btn" onclick="getAvailableAccount()" id="getAccountBtn">
-            <span id="loadingAccount" style="display:none;" class="loading"></span>
-            Lấy Tài khoản Khả dụng
+        <h1>Quản Lý Tài Khoản</h1>
+        <button class="btn-secondary" onclick="getAvailableAccount()" id="getAccountBtn">
+            <span id="accountLoading" class="loading" style="display:none;"></span>
+            Lấy Tài Khoản Khả Dụng
         </button>
         
-        <div id="accountDisplay" class="account-display">
-            <div class="account-field">
-                <label>Tài khoản:</label>
-                <span id="usernameDisplay"></span>
-                <button class="copy-btn" onclick="copyToClipboard('usernameDisplay')">Copy</button>
+        <div id="accountDisplay" class="account-info">
+            <div class="info-row">
+                <span class="info-label">Tài khoản:</span>
+                <span class="info-value" id="usernameDisplay"></span>
+                <button class="btn-primary" onclick="copyToClipboard('usernameDisplay')">Copy</button>
             </div>
-            <div class="account-field">
-                <label>Mật khẩu:</label>
-                <span id="passwordDisplay"></span>
-                <button class="copy-btn" onclick="copyToClipboard('passwordDisplay')">Copy</button>
+            <div class="info-row">
+                <span class="info-label">Mật khẩu:</span>
+                <span class="info-value" id="passwordDisplay"></span>
+                <button class="btn-primary" onclick="copyToClipboard('passwordDisplay')">Copy</button>
             </div>
-            <button class="mark-used-btn" onclick="markAsUsed()" id="markUsedBtn">
-                <span id="loadingMarkUsed" style="display:none;" class="loading"></span>
-                Đánh dấu đã dùng
+            <button class="btn-danger" onclick="markAsUsed()" id="markUsedBtn" style="margin-top: 15px;">
+                <span id="markUsedLoading" class="loading" style="display:none;"></span>
+                Đánh Dấu Đã Dùng
             </button>
         </div>
         
-        <div id="accountMessage"></div>
-        <div id="accountError"></div>
+        <div id="accountMessage" class="message success"></div>
+        <div id="accountError" class="message error"></div>
     </div>
 
     <script>
-        // Biến lưu trữ thông tin tài khoản hiện tại
+        // Biến toàn cục
         let currentAccount = null;
-        
-        // ========== PHẦN GIFT CODE ==========
-        document.getElementById('pasteBtn').addEventListener('click', async () => {
-            try {
-                const text = await navigator.clipboard.readText();
-                document.getElementById('giftCode').value = text.trim();
-            } catch (err) {
-                showError('Không thể đọc clipboard', 'error');
-                console.error('Lỗi khi dán:', err);
-            }
-        });
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec';
 
-        function addGift() {
+        // ========== HÀM TIỆN ÍCH ==========
+        function showMessage(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+            element.className = isError ? 'message error' : 'message success';
+            setTimeout(() => element.style.display = 'none', 5000);
+        }
+
+        function toggleLoading(buttonId, isLoading) {
+            const btn = document.getElementById(buttonId);
+            const loading = document.querySelector(`#${buttonId} .loading`);
+            btn.disabled = isLoading;
+            loading.style.display = isLoading ? 'inline-block' : 'none';
+        }
+
+        async function copyToClipboard(elementId) {
+            try {
+                await navigator.clipboard.writeText(document.getElementById(elementId).textContent);
+                showMessage('accountMessage', 'Đã sao chép vào clipboard!');
+            } catch (err) {
+                showMessage('accountError', 'Không thể sao chép', true);
+            }
+        }
+
+        // ========== PHẦN GIFT CODE ==========
+        async function addGift() {
             const giftCode = document.getElementById('giftCode').value.trim();
-            const messageDiv = document.getElementById('message');
-            const errorDiv = document.getElementById('error');
-            
-            clearMessages();
             
             if (!giftCode) {
-                showError('Vui lòng nhập mã gift!', 'error');
+                showMessage('error', 'Vui lòng nhập mã gift!', true);
                 return;
             }
             
-            showMessage('Đang xử lý...', 'message');
+            toggleLoading('submitBtn', true);
+            showMessage('message', 'Đang xử lý...');
             
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec';
-            
-            fetch(scriptUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({code: giftCode}),
-            })
-            .then(response => {
-                showMessage('Tiền đã về...', 'message');
-                document.getElementById('giftCode').value = '';
-            })
-            .catch(error => {
-                showError('Lỗi khi gửi yêu cầu', 'error');
-                console.error('Error:', error);
-            });
+            try {
+                const response = await callAppsScript('addGift', { code: giftCode });
+                if (response.status === 'success') {
+                    showMessage('message', 'Thêm gift thành công!');
+                    document.getElementById('giftCode').value = '';
+                } else {
+                    throw new Error(response.message || 'Lỗi không xác định');
+                }
+            } catch (error) {
+                showMessage('error', error.message, true);
+                console.error('Lỗi khi thêm gift:', error);
+            } finally {
+                toggleLoading('submitBtn', false);
+            }
         }
-        
+
         // ========== PHẦN TÀI KHOẢN ==========
-        function copyToClipboard(elementId) {
-            const text = document.getElementById(elementId).textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                showMessage('Đã sao chép vào clipboard!', 'accountMessage');
-            });
-        }
-        
-        function getAvailableAccount() {
-            const btn = document.getElementById('getAccountBtn');
-            const loading = document.getElementById('loadingAccount');
+        async function getAvailableAccount() {
+            toggleLoading('getAccountBtn', true);
+            showMessage('accountMessage', 'Đang tìm tài khoản khả dụng...');
             
-            btn.disabled = true;
-            loading.style.display = 'inline-block';
-            clearAccountMessages();
-            showMessage('Đang tìm tài khoản khả dụng...', 'accountMessage');
-            
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec?action=getAccount';
-            
-            fetch(scriptUrl)
-            .then(response => {
-                if (!response.ok) throw new Error('Lỗi kết nối');
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    currentAccount = data.account;
+            try {
+                const response = await callAppsScript('getAccount');
+                if (response.status === 'success') {
+                    currentAccount = response.account;
                     document.getElementById('usernameDisplay').textContent = currentAccount.username;
                     document.getElementById('passwordDisplay').textContent = currentAccount.password;
                     document.getElementById('accountDisplay').style.display = 'block';
-                    showMessage('Đã tìm thấy tài khoản khả dụng', 'accountMessage');
+                    showMessage('accountMessage', 'Đã tìm thấy tài khoản khả dụng');
                 } else {
-                    throw new Error(data.message || 'Không có tài khoản khả dụng');
+                    throw new Error(response.message || 'Không có tài khoản khả dụng');
                 }
-            })
-            .catch(error => {
-                showError(error.message, 'accountError');
-                console.error('Error:', error);
-            })
-            .finally(() => {
-                btn.disabled = false;
-                loading.style.display = 'none';
-            });
+            } catch (error) {
+                showMessage('accountError', error.message, true);
+                console.error('Lỗi khi lấy tài khoản:', error);
+            } finally {
+                toggleLoading('getAccountBtn', false);
+            }
         }
-        
-        function markAsUsed() {
+
+        async function markAsUsed() {
             if (!currentAccount) return;
             
-            const btn = document.getElementById('markUsedBtn');
-            const loading = document.getElementById('loadingMarkUsed');
+            toggleLoading('markUsedBtn', true);
+            showMessage('accountMessage', 'Đang cập nhật trạng thái...');
             
-            btn.disabled = true;
-            loading.style.display = 'inline-block';
-            clearAccountMessages();
-            showMessage('Đang cập nhật trạng thái...', 'accountMessage');
-            
-            const scriptUrl = `https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec?action=markUsed&row=${currentAccount.row}`;
-            
-            fetch(scriptUrl)
-            .then(response => {
-                if (!response.ok) throw new Error('Lỗi kết nối');
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    showMessage('Đã đánh dấu tài khoản đã sử dụng', 'accountMessage');
+            try {
+                const response = await callAppsScript('markUsed', { row: currentAccount.row });
+                if (response.status === 'success') {
+                    showMessage('accountMessage', 'Đã đánh dấu tài khoản đã dùng');
                     document.getElementById('accountDisplay').style.display = 'none';
                     currentAccount = null;
                 } else {
-                    throw new Error(data.message || 'Lỗi khi cập nhật');
+                    throw new Error(response.message || 'Lỗi khi cập nhật');
                 }
-            })
-            .catch(error => {
-                showError(error.message, 'accountError');
-                console.error('Error:', error);
-            })
-            .finally(() => {
-                btn.disabled = false;
-                loading.style.display = 'none';
+            } catch (error) {
+                showMessage('accountError', error.message, true);
+                console.error('Lỗi khi đánh dấu đã dùng:', error);
+            } finally {
+                toggleLoading('markUsedBtn', false);
+            }
+        }
+
+        // ========== HÀM GỌI APPS SCRIPT ==========
+        async function callAppsScript(action, params = {}) {
+            const url = new URL(SCRIPT_URL);
+            url.searchParams.append('action', action);
+            
+            // Thêm các tham số
+            Object.keys(params).forEach(key => {
+                url.searchParams.append(key, params[key]);
             });
-        }
-        
-        // ========== HÀM TIỆN ÍCH ==========
-        function showMessage(message, type) {
-            const element = document.getElementById(type);
-            element.textContent = message;
-            element.style.display = 'block';
-            if (type.includes('Error')) {
-                element.style.backgroundColor = '#fdecea';
-            } else {
-                element.style.backgroundColor = '#e8f5e9';
+
+            try {
+                // Sử dụng cả fetch và XMLHttpRequest để tương thích tốt hơn
+                if (window.fetch) {
+                    const response = await fetch(url.toString(), {
+                        method: 'GET',
+                        redirect: 'follow'
+                    });
+                    
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return await response.json();
+                } else {
+                    // Fallback cho trình duyệt cũ
+                    return await new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('GET', url.toString());
+                        xhr.onload = () => {
+                            if (xhr.status === 200) {
+                                resolve(JSON.parse(xhr.responseText));
+                            } else {
+                                reject(new Error(`Request failed with status ${xhr.status}`));
+                            }
+                        };
+                        xhr.onerror = () => reject(new Error('Network error'));
+                        xhr.send();
+                    });
+                }
+            } catch (error) {
+                console.error(`Lỗi khi gọi action ${action}:`, error);
+                throw error;
             }
         }
-        
-        function showError(message, type) {
-            const element = document.getElementById(type);
-            element.textContent = message;
-            element.style.display = 'block';
-            element.style.backgroundColor = '#fdecea';
-        }
-        
-        function clearMessages() {
-            document.getElementById('message').style.display = 'none';
-            document.getElementById('error').style.display = 'none';
-        }
-        
-        function clearAccountMessages() {
-            document.getElementById('accountMessage').style.display = 'none';
-            document.getElementById('accountError').style.display = 'none';
-        }
-        
-        // Cho phép nhấn Enter để submit gift code
+
+        // Sự kiện nhấn Enter cho ô nhập gift code
         document.getElementById('giftCode').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addGift();
-            }
+            if (e.key === 'Enter') addGift();
         });
     </script>
 </body>
