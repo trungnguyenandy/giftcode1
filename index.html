@@ -61,52 +61,43 @@
 
     <script>
         function addGift() {
-            const giftCode = document.getElementById('giftCode').value.trim();
-            const messageDiv = document.getElementById('message');
-            const errorDiv = document.getElementById('error');
-            
-            // Xóa thông báo cũ
-            messageDiv.textContent = '';
-            errorDiv.textContent = '';
-            
-            if (!giftCode) {
-                errorDiv.textContent = 'Vui lòng nhập mã gift!';
-                return;
-            }
-            
-            // Hiển thị trạng thái đang xử lý
-            messageDiv.textContent = 'Đang xử lý...';
-            
-            // Gọi Apps Script
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycbx8I7lMyEaEq02LOAqLSLt6SGlUeQyR7jZoeaO--VPqonOpggCf8GDyZfwSLIQOr_6PFg/exec';
-            
-            fetch(scriptUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({code: giftCode}),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Lỗi kết nối');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.result === 'success') {
-                    messageDiv.textContent = 'Thêm gift thành công!';
-                    document.getElementById('giftCode').value = '';
-                } else {
-                    errorDiv.textContent = data.message || 'Có lỗi xảy ra';
-                }
-            })
-            .catch(error => {
-                errorDiv.textContent = 'Lỗi: ' + error.message;
-                console.error('Error:', error);
-            });
-        }
+  const giftCode = document.getElementById('giftCode').value.trim();
+  const messageDiv = document.getElementById('message');
+  const errorDiv = document.getElementById('error');
+  
+  // Reset messages
+  messageDiv.textContent = '';
+  errorDiv.textContent = '';
+  
+  // Validate input
+  if (!giftCode) {
+    errorDiv.textContent = 'Vui lòng nhập mã gift!';
+    return;
+  }
+  
+  messageDiv.textContent = 'Đang xử lý...';
+  
+  const scriptUrl = 'https://script.google.com/macros/s/AKfycbx8I7lMyEaEq02LOAqLSLt6SGlUeQyR7jZoeaO--VPqonOpggCf8GDyZfwSLIQOr_6PFg/exec';
+  
+  // Sử dụng fetch với mode 'no-cors'
+  fetch(scriptUrl, {
+    method: 'POST',
+    mode: 'no-cors', // Quan trọng: bỏ qua CORS
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({code: giftCode}),
+  })
+  .then(response => {
+    // Vì dùng no-cors nên response sẽ limited
+    messageDiv.textContent = 'Yêu cầu đã được gửi (kiểm tra sheet)';
+    document.getElementById('giftCode').value = '';
+  })
+  .catch(error => {
+    errorDiv.textContent = 'Lỗi khi gửi yêu cầu';
+    console.error('Error:', error);
+  });
+}
         
         // Cho phép nhấn Enter để submit
         document.getElementById('giftCode').addEventListener('keypress', function(e) {
