@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toptop by Trung Nguyen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex-grow: 1;
+        }
+        button {
+            padding: 10px 15px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        #pasteBtn {
+            background-color: #ff9800;
+        }
+        #pasteBtn:hover {
+            background-color: #f57c00;
+        }
+        #submitBtn {
+            background-color: #4285f4;
+        }
+        #submitBtn:hover {
+            background-color: #3367d6;
+        }
+        .copy-btn {
+            background-color: #4CAF50;
+        }
+        .copy-btn:hover {
+            background-color: #3e8e41;
+        }
+        #message, #accountMessage {
+            margin-top: 20px;
+            color: green;
+            font-weight: bold;
+        }
+        #error, #accountError {
+            margin-top: 20px;
+            color: red;
+            font-weight: bold;
+        }
+        .account-display {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .account-field {
+            flex: 1;
+            text-align: left;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Phần thêm gift code -->
+    <div class="container">
+        <h1>Thêm Gift Mới</h1>
+        <div class="input-group">
+            <input type="text" id="giftCode" placeholder="Nhập mã gift...">
+            <button id="pasteBtn">Dán</button>
+            <button id="submitBtn" onclick="addGift()">Nhập Gift</button>
+        </div>
+        <div id="message"></div>
+        <div id="error"></div>
+    </div>
+
+    <!-- Phần quản lý tài khoản -->
+    <div class="container">
+        <h1>Quản lý Tài khoản</h1>
+        <button onclick="getAvailableAccount()">Lấy Tài khoản Khả dụng</button>
+        
+        <div id="accountDisplay" style="display: none; margin-top: 20px;">
+            <div class="account-display">
+                <div class="account-field">
+                    <strong>Tài khoản:</strong> <span id="usernameDisplay"></span>
+                    <button class="copy-btn" onclick="copyToClipboard('usernameDisplay')">Copy</button>
+                </div>
+                <div class="account-field">
+                    <strong>Mật khẩu:</strong> <span id="passwordDisplay"></span>
+                    <button class="copy-btn" onclick="copyToClipboard('passwordDisplay')">Copy</button>
+                </div>
+            </div>
+            <button onclick="markAsUsed()">Đánh dấu đã dùng</button>
+        </div>
+        
+        <div id="accountMessage"></div>
+        <div id="accountError"></div>
+    </div>
+
+    <script>
+        // Biến lưu trữ thông tin tài khoản hiện tại
+        let currentAccount = null;
+        
+        // ========== PHẦN GIFT CODE ==========
+        document.getElementById('pasteBtn').addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('giftCode').value = text.trim();
+            } catch (err) {
+                document.getElementById('error').textContent = 'Không thể đọc clipboard';
+                console.error('Lỗi khi dán:', err);
+            }
+        });
+
+        function addGift() {
+            const giftCode = document.getElementById('giftCode').value.trim();
+            const messageDiv = document.getElementById('message');
+            const errorDiv = document.getElementById('error');
+            
+            messageDiv.textContent = '';
+            errorDiv.textContent = '';
+            
+            if (!giftCode) {
+                errorDiv.textContent = 'Vui lòng nhập mã gift!';
+                return;
+            }
+            
+            messageDiv.textContent = 'Đang xử lý...';
+            
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec';
+            
+            fetch(scriptUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({code: giftCode}),
+            })
+            .then(response => {
+                messageDiv.textContent = 'Tiền đã về...';
+                document.getElementById('giftCode').value = '';
+            })
+            .catch(error => {
+                errorDiv.textContent = 'Lỗi khi gửi yêu cầu';
+                console.error('Error:', error);
+            });
+        }
+        
+        document.getElementById('giftCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addGift();
+            }
+        });
+        
+        // ========== PHẦN TÀI KHOẢN ==========
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Đã sao chép vào clipboard!');
+            });
+        }
+        
+        function getAvailableAccount() {
+            const messageDiv = document.getElementById('accountMessage');
+            const errorDiv = document.getElementById('accountError');
+            
+            messageDiv.textContent = 'Đang tìm tài khoản khả dụng...';
+            errorDiv.textContent = '';
+            
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec?action=getAccount';
+            
+            fetch(scriptUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    currentAccount = data.account;
+                    document.getElementById('usernameDisplay').textContent = currentAccount.username;
+                    document.getElementById('passwordDisplay').textContent = currentAccount.password;
+                    document.getElementById('accountDisplay').style.display = 'block';
+                    messageDiv.textContent = 'Đã tìm thấy tài khoản khả dụng';
+                } else {
+                    errorDiv.textContent = data.message || 'Không có tài khoản khả dụng';
+                }
+            })
+            .catch(error => {
+                errorDiv.textContent = 'Lỗi khi tải tài khoản';
+                console.error('Error:', error);
+            });
+        }
+        
+        function markAsUsed() {
+            if (!currentAccount) return;
+            
+            const messageDiv = document.getElementById('accountMessage');
+            const errorDiv = document.getElementById('accountError');
+            
+            messageDiv.textContent = 'Đang cập nhật trạng thái...';
+            
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec?action=markUsed&row=' + currentAccount.row;
+            
+            fetch(scriptUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    messageDiv.textContent = 'Đã đánh dấu tài khoản đã sử dụng';
+                    document.getElementById('accountDisplay').style.display = 'none';
+                    currentAccount = null;
+                } else {
+                    errorDiv.textContent = data.message || 'Lỗi khi cập nhật';
+                }
+            })
+            .catch(error => {
+                errorDiv.textContent = 'Lỗi khi cập nhật trạng thái';
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
