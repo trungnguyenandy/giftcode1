@@ -21,11 +21,12 @@
         h1 {
             color: #2c3e50;
             text-align: center;
+            margin-bottom: 20px;
         }
         .input-group {
             margin-bottom: 20px;
         }
-        input[type="text"] {
+        input {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
@@ -49,9 +50,10 @@
         }
         #message {
             margin-top: 15px;
-            padding: 10px;
+            padding: 12px;
             border-radius: 4px;
             display: none;
+            text-align: center;
         }
         .success {
             background-color: #d4edda;
@@ -63,6 +65,10 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+        .loading {
+            background-color: #fff3cd;
+            color: #856404;
+        }
     </style>
 </head>
 <body>
@@ -71,64 +77,55 @@
         <div class="input-group">
             <input type="text" id="giftInput" placeholder="Nhập gift code...">
         </div>
-        <button onclick="addGift()">Thêm Gift</button>
+        <button id="submitBtn" onclick="addGift()">Thêm Gift</button>
         <div id="message"></div>
     </div>
 
     <script>
+        const WEB_APP_URL = 'https://script.google.com/macros/s/1R3M1MBZCSCRRy_i_a4YnjAT8Ky2QPYauyx7ZuLBpL-wRNAK52sO7RdBe/exec'; // Thay YOUR_SCRIPT_ID bằng ID từ Deploy
+        
         function addGift() {
-            const giftInput = document.getElementById('giftInput');
-            const gift = giftInput.value.trim();
+            const gift = document.getElementById('giftInput').value.trim();
             const messageEl = document.getElementById('message');
+            const btn = document.getElementById('submitBtn');
             
-            // Clear previous messages
+            // Reset trạng thái
             messageEl.style.display = 'none';
             
-            // Validate input
+            // Validate
             if (!gift) {
                 showMessage('Vui lòng nhập gift code!', 'error');
-                giftInput.focus();
                 return;
             }
             
-            // Disable button during request
-            const btn = document.querySelector('button');
+            // Hiển thị loading
             btn.disabled = true;
-            btn.textContent = 'Đang xử lý...';
+            btn.innerHTML = '<i>Đang xử lý...</i>';
+            showMessage('Đang kết nối đến server...', 'loading');
             
-            // Replace with your actual Web App URL
-            const webAppUrl = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
-            
-            // Create payload
-            const payload = {
-                gift: gift
-            };
-            
-            // Send request
-            fetch(webAppUrl, {
+            // Gửi request
+            fetch(WEB_APP_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(payload),
+                body: JSON.stringify({ gift: gift }),
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Lỗi kết nối đến server');
-                }
+                if (!response.ok) throw new Error('Lỗi kết nối');
                 return response.json();
             })
             .then(data => {
                 if (data.status === 'success') {
-                    showMessage(data.message || 'Đã thêm gift thành công!', 'success');
-                    giftInput.value = '';
+                    showMessage(`✅ ${data.message}<br>Mã: ${data.data.gift}<br>Thời gian: ${data.data.time}`, 'success');
+                    document.getElementById('giftInput').value = '';
                 } else {
-                    throw new Error(data.message || 'Có lỗi khi thêm gift');
+                    throw new Error(data.message || 'Lỗi không xác định');
                 }
             })
             .catch(error => {
+                showMessage(`❌ ${error.message}`, 'error');
                 console.error('Error:', error);
-                showMessage(error.message || 'Lỗi khi thêm gift', 'error');
             })
             .finally(() => {
                 btn.disabled = false;
@@ -138,14 +135,9 @@
         
         function showMessage(text, type) {
             const messageEl = document.getElementById('message');
-            messageEl.textContent = text;
+            messageEl.innerHTML = text;
             messageEl.className = type;
             messageEl.style.display = 'block';
-            
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
-                messageEl.style.display = 'none';
-            }, 5000);
         }
     </script>
 </body>
