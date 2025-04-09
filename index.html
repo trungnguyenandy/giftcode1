@@ -175,7 +175,7 @@
            
             <button id="pasteAndSubmitBtn" onclick="pasteAndSubmitGift()">
                 <span>➡️</span> Dán và gửi Gift
-                 <input type="text" id="giftCode" class="gift-code-input" placeholder="Mã gift...">
+                 <input type="text" id="giftCode" placeholder="Mã gift...">
             </button>
         </div>
         <div id="message" class="message"></div>
@@ -317,22 +317,7 @@
                 }
             });
         }
-        <style>
-    /* CSS mặc định cho desktop */
-    .gift-code-input {
-        width: 100%;
-        padding: 12px;
-        box-sizing: border-box;
-    }
-    
-    /* CSS cho mobile */
-    @media (max-width: 768px) {
-        .gift-code-input {
-            width: 25%; /* Giảm xuống 1/4 kích thước */
-            min-width: 100px; /* Đảm bảo không quá nhỏ */
-        }
-    }
-</style>
+        
         function getAvailableAccount() {
             const messageDiv = document.getElementById('accountMessage');
             const errorDiv = document.getElementById('accountError');
