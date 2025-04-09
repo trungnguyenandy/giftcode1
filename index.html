@@ -117,7 +117,6 @@
         }
         
         input {
-            display: none;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -150,9 +149,12 @@
             cursor: not-allowed;
         }
         
-        #pasteAndSubmitBtn {
+        .paste-btn {
+            background-color: var(--primary-color);
+        }
+        
+        .submit-btn {
             background-color: var(--warning-color);
-            min-width: 140px;
         }
         
         .copy-btn {
@@ -270,13 +272,18 @@
                 <h1>Tiktok Lite</h1>
             </div>
 
-            <!-- Phần thêm gift code -->
+            <!-- Phần thêm gift code (ĐÃ ĐƯỢC TÁCH THÀNH 2 NÚT RIÊNG) -->
             <div class="container">
-                <h4 class="section-title">Bấm Để Thêm Gift Mới</h4>
+                <h4 class="section-title">Thêm Gift Mới</h4>
                 <div class="input-group">
-                    <button id="pasteAndSubmitBtn" onclick="pasteAndSubmitGift()">
-                        <span>➡️</span> Dán và gửi Gift
-                        <input type="text" id="giftCode" placeholder="Mã gift...">
+                    <input type="text" id="giftCode" placeholder="Nhập mã gift hoặc dán vào đây">
+                </div>
+                <div class="input-group" style="justify-content: space-between;">
+                    <button class="paste-btn" onclick="pasteGiftCode()">
+                        <span>📋</span> Dán từ clipboard
+                    </button>
+                    <button class="submit-btn" onclick="submitGiftCode()">
+                        <span>➡️</span> Gửi Gift
                     </button>
                 </div>
                 <div id="message" class="message"></div>
@@ -287,7 +294,7 @@
                 </div>
             </div>
 
-            <!-- Phần quản lý tài khoản -->
+            <!-- Phần quản lý tài khoản (GIỮ NGUYÊN) -->
             <div class="container">
                 <h2 class="section-title">Quản lý Tài khoản</h2>
                 <button onclick="getAvailableAccount()" style="margin-bottom: 15px;">
@@ -330,7 +337,7 @@
             <div id="copyNotification" class="copy-notification"></div>
         </div>
         
-        <!-- Tab 2: Video 60P -->
+        <!-- Tab 2: Video 60P (GIỮ NGUYÊN) -->
         <div class="content" id="video">
             <iframe class="iframe-container" src="https://giau.mobi/" frameborder="0" allowfullscreen></iframe>
         </div>
@@ -341,7 +348,7 @@
         let currentAccount = null;
         let isProcessing = false;
         
-        // ========== TAB FUNCTIONALITY ==========
+        // ========== TAB FUNCTIONALITY (GIỮ NGUYÊN) ==========
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 // Remove active class from all tabs and contents
@@ -355,11 +362,45 @@
             });
         });
         
-        // ========== PHẦN GIFT CODE ==========
-        async function pasteAndSubmitGift() {
+        // ========== PHẦN GIFT CODE (ĐÃ TÁCH THÀNH 2 HÀM RIÊNG) ==========
+        async function pasteGiftCode() {
+            const giftCodeInput = document.getElementById('giftCode');
+            const errorDiv = document.getElementById('error');
+            
+            // Reset trạng thái
+            errorDiv.textContent = '';
+            errorDiv.style.display = 'none';
+            
+            try {
+                // Thử đọc clipboard
+                const text = await navigator.clipboard.readText();
+                const giftCode = text.trim();
+                
+                if (!giftCode) {
+                    throw new Error('Clipboard không có nội dung');
+                }
+                
+                giftCodeInput.value = giftCode;
+            } catch (err) {
+                console.error('Lỗi khi dán:', err);
+                
+                // Trên iOS hoặc khi không có quyền truy cập clipboard
+                if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    errorDiv.innerHTML = 'Trên iPhone/iPad:<br>1. Nhấn giữ vào ô input<br>2. Chọn "Dán"';
+                } else {
+                    errorDiv.textContent = 'Vui lòng cho phép truy cập clipboard hoặc nhập thủ công';
+                }
+                
+                errorDiv.style.display = 'block';
+                giftCodeInput.focus();
+            }
+        }
+        
+        async function submitGiftCode() {
             if (isProcessing) return;
             
             const giftCodeInput = document.getElementById('giftCode');
+            const giftCode = giftCodeInput.value.trim();
             const messageDiv = document.getElementById('message');
             const errorDiv = document.getElementById('error');
             const loadingDiv = document.getElementById('giftLoading');
@@ -369,21 +410,17 @@
             errorDiv.textContent = '';
             messageDiv.style.display = 'none';
             errorDiv.style.display = 'none';
-            loadingDiv.style.display = 'block';
             
+            if (!giftCode) {
+                errorDiv.textContent = 'Vui lòng nhập mã gift';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            loadingDiv.style.display = 'block';
             isProcessing = true;
+            
             try {
-                // Bước 1: Dán nội dung từ clipboard
-                const text = await navigator.clipboard.readText();
-                const giftCode = text.trim();
-                
-                if (!giftCode) {
-                    throw new Error('Clipboard không có nội dung');
-                }
-                
-                giftCodeInput.value = giftCode;
-                
-                // Bước 2: Tự động gửi gift code
                 const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec';
                 
                 await fetch(scriptUrl, {
@@ -395,17 +432,13 @@
                     body: JSON.stringify({code: giftCode}),
                 });
                 
-                messageDiv.textContent = 'Đã dán và gửi gift code thành công!';
+                messageDiv.textContent = 'Đã gửi gift code thành công!';
                 messageDiv.style.display = 'block';
                 giftCodeInput.value = '';
             } catch (err) {
-                console.error('Lỗi:', err);
-                errorDiv.textContent = err.message || 'Lỗi khi dán và gửi gift code';
+                console.error('Lỗi khi gửi:', err);
+                errorDiv.textContent = 'Lỗi khi gửi gift code';
                 errorDiv.style.display = 'block';
-                
-                // Nếu lỗi ở bước dán, vẫn cho phép nhập thủ công
-                giftCodeInput.style.display = 'block';
-                giftCodeInput.focus();
             } finally {
                 loadingDiv.style.display = 'none';
                 isProcessing = false;
@@ -415,11 +448,11 @@
         // Sự kiện nhấn Enter trong ô input
         document.getElementById('giftCode').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                pasteAndSubmitGift();
+                submitGiftCode();
             }
         });
         
-        // ========== PHẦN TÀI KHOẢN ==========
+        // ========== PHẦN TÀI KHOẢN (GIỮ NGUYÊN) ==========
         function showCopyNotification(text) {
             const notification = document.getElementById('copyNotification');
             notification.textContent = `Đã sao chép ${text}`;
@@ -519,18 +552,3 @@
     </script>
 </body>
 </html>
-
-// Kiểm tra thiết bị iOS
-function isIOS() {
-    return /iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
-
-// Trong hàm pasteAndSubmitGift
-if (isIOS()) {
-    // Hiển thị hướng dẫn cụ thể cho iOS
-    errorDiv.innerHTML = 'Trên iPhone/iPad:<br>1. Nhấn giữ vào ô input<br>2. Chọn "Dán"<br>3. Nhấn Enter để gửi';
-    errorDiv.style.display = 'block';
-    giftCodeInput.style.display = 'block';
-    giftCodeInput.focus();
-    return;
-}
