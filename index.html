@@ -52,6 +52,7 @@
             align-items: center;
         }
         input {
+            display: none; /* Ẩn hoàn toàn */
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -175,7 +176,7 @@
            
             <button id="pasteAndSubmitBtn" onclick="pasteAndSubmitGift()">
                 <span>➡️</span> Dán và gửi Gift
-
+<input type="text" id="giftCode" placeholder="Mã gift...">
             </button>
         </div>
         <div id="message" class="message"></div>
