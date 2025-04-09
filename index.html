@@ -12,7 +12,7 @@
             --danger-color: #ea4335;
             --light-gray: #f5f5f5;
             --dark-gray: #333;
-            --tab-height: 60px;
+            --tab-height: 50px;
             --header-height: 60px;
         }
         
@@ -24,12 +24,11 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: #f9f9f9;
             color: var(--dark-gray);
             line-height: 1.6;
-            height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden;
             touch-action: manipulation;
         }
         
@@ -45,12 +44,13 @@
         .header-title {
             text-align: center;
             padding: 15px;
-            font-size: 1.5em;
+            font-size: 1.3em;
             color: var(--primary-color);
-            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
         
-        /* Sticky Navigation Bar */
+        /* Sticky Navigation */
         .tab-container {
             display: flex;
             height: var(--tab-height);
@@ -66,10 +66,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 0 10px;
             font-weight: 500;
+            font-size: 14px;
             cursor: pointer;
-            transition: all 0.2s ease-out;
+            transition: all 0.2s;
             border-bottom: 3px solid transparent;
             user-select: none;
             -webkit-user-select: none;
@@ -80,7 +80,7 @@
             color: var(--primary-color);
         }
         
-        /* Content Area */
+        /* Main Content */
         .content-container {
             height: calc(100vh - var(--header-height) - var(--tab-height));
             overflow-y: auto;
@@ -88,7 +88,7 @@
         }
         
         .content {
-            padding: 20px;
+            padding: 15px;
             display: none;
         }
         
@@ -96,13 +96,13 @@
             display: block;
         }
         
-        /* Các phần CSS khác giữ nguyên... */
+        /* Common Styles */
         .container {
             background-color: white;
             border-radius: 10px;
-            padding: 20px;
+            padding: 15px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .section-title {
@@ -112,29 +112,152 @@
             font-size: 1.2em;
         }
         
-        /* Các nút và form controls */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        input {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            width: 100%;
+            -webkit-appearance: none;
+        }
+        
         button {
-            padding: 12px 20px;
+            padding: 12px 15px;
             color: white;
             border: none;
             border-radius: 8px;
-            cursor: pointer;
             font-weight: 500;
             font-size: 15px;
-            transition: all 0.2s ease-out;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
             width: 100%;
-            margin-bottom: 15px;
         }
         
         button:active {
-            transform: scale(0.96);
+            transform: scale(0.98);
         }
         
-        /* Các phần CSS khác giữ nguyên... */
+        button:disabled {
+            opacity: 0.6;
+            transform: none !important;
+        }
+        
+        #pasteAndSubmitBtn {
+            background-color: var(--warning-color);
+        }
+        
+        #iosSubmitBtn {
+            background-color: var(--primary-color);
+            display: none;
+        }
+        
+        .copy-btn {
+            background-color: var(--secondary-color);
+        }
+        
+        .mark-used-btn {
+            background-color: var(--danger-color);
+        }
+        
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
+            font-size: 14px;
+        }
+        
+        .success-message {
+            background-color: #e6f4ea;
+            color: var(--secondary-color);
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .error-message {
+            background-color: #fce8e6;
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        /* Account Tab Styles */
+        .account-display {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .account-field {
+            padding: 12px;
+            background: var(--light-gray);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .account-field strong {
+            color: var(--dark-gray);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .copy-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Video Tab Styles */
+        .iframe-container {
+            width: 100%;
+            height: 300px;
+            border: none;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -142,7 +265,7 @@
     <div class="app-header">
         <div class="header-title">Tiktok Lite Manager</div>
         
-        <!-- Sticky Navigation Bar -->
+        <!-- Sticky Navigation -->
         <div class="tab-container">
             <div class="tab active" data-tab="management">Quản lý</div>
             <div class="tab" data-tab="video">Video 60P</div>
@@ -150,7 +273,7 @@
         </div>
     </div>
     
-    <!-- Content Area -->
+    <!-- Main Content -->
     <div class="content-container">
         <!-- Tab 1: Quản lý -->
         <div class="content active" id="management">
@@ -158,11 +281,19 @@
                 <h2 class="section-title">Thêm Gift Code</h2>
                 <div class="input-group">
                     <input type="text" id="giftCode" placeholder="Nhập mã gift...">
-                    <button id="submitGiftBtn">
-                        <span>📤</span> Gửi Gift Code
+                    <button id="pasteAndSubmitBtn">
+                        <span>➡️</span> Dán và gửi Gift
+                    </button>
+                    <button id="iosSubmitBtn">
+                        <span>📤</span> Gửi Gift
                     </button>
                 </div>
                 <div id="giftMessage" class="message"></div>
+                <div id="giftError" class="message"></div>
+                <div class="loading" id="giftLoading">
+                    <div class="loading-spinner"></div>
+                    <p>Đang xử lý...</p>
+                </div>
             </div>
         </div>
         
@@ -182,46 +313,402 @@
                     <span>🔍</span> Lấy Tài khoản Khả dụng
                 </button>
                 
-                <div id="accountInfo" style="display: none;">
-                    <div class="account-field">
-                        <strong>Tài khoản:</strong> <span id="username"></span>
-                        <button class="copy-btn">Copy</button>
-                    </div>
-                    <div class="account-field">
-                        <strong>Mật khẩu:</strong> <span id="password"></span>
-                        <button class="copy-btn">Copy</button>
-                    </div>
-                    <button class="mark-used-btn">Đánh dấu đã dùng</button>
+                <div class="loading" id="accountLoading">
+                    <div class="loading-spinner"></div>
+                    <p>Đang tìm tài khoản...</p>
                 </div>
+                
+                <div id="accountDisplay" style="display: none;">
+                    <div class="account-display">
+                        <div class="account-field">
+                            <div>
+                                <strong>Tài khoản:</strong> <span id="usernameDisplay"></span>
+                            </div>
+                            <button class="copy-btn" id="copyUsernameBtn">
+                                <span>⎘</span> Copy
+                            </button>
+                        </div>
+                        <div class="account-field">
+                            <div>
+                                <strong>Mật khẩu:</strong> <span id="passwordDisplay"></span>
+                            </div>
+                            <button class="copy-btn" id="copyPasswordBtn">
+                                <span>⎘</span> Copy
+                            </button>
+                        </div>
+                    </div>
+                    <button class="mark-used-btn" id="markUsedBtn">
+                        <span>✓</span> Đánh dấu đã dùng
+                    </button>
+                </div>
+                
+                <div id="accountMessage" class="message success-message"></div>
+                <div id="accountError" class="message error-message"></div>
             </div>
         </div>
     </div>
 
+    <div id="copyNotification" class="copy-notification"></div>
+
     <script>
-        // Khởi tạo sticky navigation
+        // Biến toàn cục
+        let currentAccount = null;
+        let isProcessing = false;
+        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        
+        // Khởi tạo ứng dụng
         document.addEventListener('DOMContentLoaded', function() {
+            initUI();
+            setupEventListeners();
+            
+            if (isIOS) {
+                document.getElementById('iosSubmitBtn').style.display = 'flex';
+                document.getElementById('giftCode').style.display = 'block';
+            }
+        });
+        
+        function initUI() {
+            // Thêm lớp iOS nếu cần
+            if (isIOS) {
+                document.body.classList.add('ios');
+            }
+        }
+        
+        function setupEventListeners() {
             // Tab switching
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Remove active class from all tabs and contents
-                    tabs.forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-                    
-                    // Add active class to clicked tab and corresponding content
-                    this.classList.add('active');
-                    const tabId = this.getAttribute('data-tab');
-                    document.getElementById(tabId).classList.add('active');
-                    
-                    // Scroll to top of content
-                    document.querySelector('.content-container').scrollTop = 0;
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener(isIOS ? 'touchend' : 'click', function(e) {
+                    if (isIOS) e.preventDefault();
+                    switchTab(this);
                 });
             });
             
-            // Thêm các sự kiện khác tại đây...
-        });
+            // Gift code buttons
+            document.getElementById('pasteAndSubmitBtn').addEventListener(isIOS ? 'touchend' : 'click', function(e) {
+                if (isIOS) e.preventDefault();
+                handlePasteAndSubmitGift();
+            });
+            
+            document.getElementById('iosSubmitBtn').addEventListener(isIOS ? 'touchend' : 'click', function(e) {
+                if (isIOS) e.preventDefault();
+                handleSubmitGiftManually();
+            });
+            
+            // Account buttons
+            document.getElementById('getAccountBtn').addEventListener(isIOS ? 'touchend' : 'click', function(e) {
+                if (isIOS) e.preventDefault();
+                handleGetAvailableAccount();
+            });
+            
+            document.getElementById('copyUsernameBtn').addEventListener(isIOS ? 'touchend' : 'click', function(e) {
+                if (isIOS) e.preventDefault();
+                handleCopyToClipboard('usernameDisplay', 'tài khoản');
+            });
+            
+            document.getElementById('copyPasswordBtn').addEventListener(isIOS ? 'touchend' : 'click', function(e) {
+                if (isIOS) e.preventDefault();
+                handleCopyToClipboard('passwordDisplay', 'mật khẩu');
+            });
+            
+            document.getElementById('markUsedBtn').addEventListener(isIOS ? 'touchend' : 'click', function(e) {
+                if (isIOS) e.preventDefault();
+                handleMarkAsUsed();
+            });
+            
+            // Input enter key
+            document.getElementById('giftCode').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    if (isIOS) {
+                        handleSubmitGiftManually();
+                    } else {
+                        handlePasteAndSubmitGift();
+                    }
+                }
+            });
+        }
         
-        // Các hàm xử lý khác giữ nguyên...
+        function switchTab(clickedTab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            
+            clickedTab.classList.add('active');
+            const tabId = clickedTab.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
+            
+            // Scroll to top khi chuyển tab
+            document.querySelector('.content-container').scrollTop = 0;
+        }
+        
+        // ========== GIFT CODE FUNCTIONS ==========
+        async function handlePasteAndSubmitGift() {
+            if (isProcessing) return;
+            isProcessing = true;
+            
+            const button = document.getElementById('pasteAndSubmitBtn');
+            button.disabled = true;
+            
+            try {
+                await pasteAndSubmitGift();
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Lỗi khi xử lý gift code', 'error', 'giftError');
+            } finally {
+                button.disabled = false;
+                isProcessing = false;
+            }
+        }
+        
+        async function pasteAndSubmitGift() {
+            const giftCodeInput = document.getElementById('giftCode');
+            const loadingDiv = document.getElementById('giftLoading');
+            
+            // Reset UI
+            hideMessage('giftMessage');
+            hideMessage('giftError');
+            loadingDiv.style.display = 'block';
+            
+            try {
+                if (isIOS) {
+                    giftCodeInput.style.display = 'block';
+                    giftCodeInput.focus();
+                    throw new Error('Vui lòng dán mã gift vào ô trên và nhấn nút "Gửi Gift"');
+                }
+                
+                await delay(50); // Đảm bảo UI kịp cập nhật
+                
+                const text = await navigator.clipboard.readText();
+                const giftCode = text.trim();
+                
+                if (!giftCode) throw new Error('Clipboard không có nội dung');
+                
+                giftCodeInput.value = giftCode;
+                await submitGiftCode(giftCode);
+                
+                showMessage('Đã dán và gửi gift code thành công!', 'success', 'giftMessage');
+                giftCodeInput.value = '';
+            } catch (err) {
+                showMessage(err.message || 'Lỗi khi dán và gửi gift code', 'error', 'giftError');
+                giftCodeInput.style.display = 'block';
+                giftCodeInput.focus();
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+        
+        async function handleSubmitGiftManually() {
+            if (isProcessing) return;
+            isProcessing = true;
+            
+            const button = document.getElementById('iosSubmitBtn');
+            button.disabled = true;
+            
+            try {
+                await delay(50);
+                await submitGiftManually();
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Lỗi khi gửi gift code', 'error', 'giftError');
+            } finally {
+                button.disabled = false;
+                isProcessing = false;
+            }
+        }
+        
+        async function submitGiftManually() {
+            const giftCode = document.getElementById('giftCode').value.trim();
+            const loadingDiv = document.getElementById('giftLoading');
+            
+            if (!giftCode) {
+                throw new Error('Vui lòng nhập hoặc dán mã gift trước khi gửi');
+            }
+            
+            hideMessage('giftMessage');
+            hideMessage('giftError');
+            loadingDiv.style.display = 'block';
+            
+            try {
+                await submitGiftCode(giftCode);
+                showMessage('Đã gửi gift code thành công!', 'success', 'giftMessage');
+                document.getElementById('giftCode').value = '';
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+        
+        async function submitGiftCode(giftCode) {
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec';
+            
+            await fetch(scriptUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({code: giftCode}),
+            });
+        }
+        
+        // ========== ACCOUNT FUNCTIONS ==========
+        async function handleGetAvailableAccount() {
+            if (isProcessing) return;
+            isProcessing = true;
+            
+            const button = document.getElementById('getAccountBtn');
+            button.disabled = true;
+            
+            try {
+                await delay(50);
+                await getAvailableAccount();
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Lỗi khi tải tài khoản', 'error', 'accountError');
+            } finally {
+                button.disabled = false;
+                isProcessing = false;
+            }
+        }
+        
+        async function getAvailableAccount() {
+            const loadingDiv = document.getElementById('accountLoading');
+            const accountDisplay = document.getElementById('accountDisplay');
+            
+            hideMessage('accountMessage');
+            hideMessage('accountError');
+            loadingDiv.style.display = 'block';
+            accountDisplay.style.display = 'none';
+            
+            try {
+                const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec?action=getAccount&_=' + Date.now();
+                
+                const response = await fetch(scriptUrl);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    currentAccount = data.account;
+                    document.getElementById('usernameDisplay').textContent = currentAccount.username;
+                    document.getElementById('passwordDisplay').textContent = currentAccount.password;
+                    accountDisplay.style.display = 'block';
+                    
+                    showMessage('Đã tìm thấy tài khoản khả dụng', 'success', 'accountMessage');
+                } else {
+                    throw new Error(data.message || 'Không có tài khoản khả dụng');
+                }
+            } catch (error) {
+                throw error;
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+        
+        async function handleCopyToClipboard(elementId, label) {
+            if (isProcessing) return;
+            isProcessing = true;
+            
+            const button = document.getElementById(`copy${elementId.replace('Display', '')}Btn`);
+            button.disabled = true;
+            
+            try {
+                await delay(50);
+                await copyToClipboard(elementId, label);
+                
+                // Nếu copy username thì tự động đánh dấu đã dùng
+                if (elementId === 'usernameDisplay') {
+                    await handleMarkAsUsed();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            } finally {
+                setTimeout(() => {
+                    button.disabled = false;
+                    isProcessing = false;
+                }, 300);
+            }
+        }
+        
+        async function copyToClipboard(elementId, label) {
+            try {
+                const text = document.getElementById(elementId).textContent;
+                await navigator.clipboard.writeText(text);
+                showCopyNotification(`Đã sao chép ${label}`);
+            } catch (err) {
+                console.error('Lỗi khi sao chép:', err);
+                throw err;
+            }
+        }
+        
+        async function handleMarkAsUsed() {
+            if (isProcessing || !currentAccount) return;
+            isProcessing = true;
+            
+            const button = document.getElementById('markUsedBtn');
+            button.disabled = true;
+            
+            try {
+                await delay(50);
+                await markAsUsed();
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Lỗi khi đánh dấu tài khoản', 'error', 'accountError');
+            } finally {
+                setTimeout(() => {
+                    button.disabled = false;
+                    isProcessing = false;
+                }, 300);
+            }
+        }
+        
+        async function markAsUsed() {
+            const loadingDiv = document.getElementById('accountLoading');
+            const accountDisplay = document.getElementById('accountDisplay');
+            
+            showMessage('Đang cập nhật trạng thái...', 'success', 'accountMessage');
+            loadingDiv.style.display = 'block';
+            
+            try {
+                const scriptUrl = `https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec?action=markUsed&row=${currentAccount.row}&_=${Date.now()}`;
+                
+                const response = await fetch(scriptUrl);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showMessage('Đã đánh dấu tài khoản đã sử dụng', 'success', 'accountMessage');
+                    accountDisplay.style.display = 'none';
+                    currentAccount = null;
+                } else {
+                    throw new Error(data.message || 'Lỗi khi cập nhật');
+                }
+            } catch (error) {
+                throw error;
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+        
+        // ========== HELPER FUNCTIONS ==========
+        function showMessage(message, type, elementId) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = 'message ' + (type === 'success' ? 'success-message' : 'error-message');
+            element.style.display = 'block';
+        }
+        
+        function hideMessage(elementId) {
+            document.getElementById(elementId).style.display = 'none';
+        }
+        
+        function showCopyNotification(text) {
+            const notification = document.getElementById('copyNotification');
+            notification.textContent = text;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 2000);
+        }
+        
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
     </script>
 </body>
 </html>
