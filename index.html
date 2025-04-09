@@ -519,3 +519,18 @@
     </script>
 </body>
 </html>
+
+// Kiểm tra thiết bị iOS
+function isIOS() {
+    return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+// Trong hàm pasteAndSubmitGift
+if (isIOS()) {
+    // Hiển thị hướng dẫn cụ thể cho iOS
+    errorDiv.innerHTML = 'Trên iPhone/iPad:<br>1. Nhấn giữ vào ô input<br>2. Chọn "Dán"<br>3. Nhấn Enter để gửi';
+    errorDiv.style.display = 'block';
+    giftCodeInput.style.display = 'block';
+    giftCodeInput.focus();
+    return;
+}
