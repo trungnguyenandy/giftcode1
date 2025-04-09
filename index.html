@@ -81,11 +81,14 @@
             opacity: 0.9;
             transform: translateY(-2px);
         }
-        #pasteBtn {
-            background-color: var(--warning-color);
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
         }
-        #submitBtn {
-            background-color: var(--primary-color);
+        #pasteAndSubmitBtn {
+            background-color: var(--warning-color);
+            min-width: 160px;
         }
         .copy-btn {
             background-color: var(--secondary-color);
@@ -165,16 +168,13 @@
         <p>Công cụ quản lý gift code và tài khoản</p>
     </div>
 
-    <!-- Phần thêm gift code (GIỮ NGUYÊN CHỨC NĂNG GỐC) -->
+    <!-- Phần thêm gift code -->
     <div class="container">
         <h2 class="section-title">Thêm Gift Mới</h2>
         <div class="input-group">
             <input type="text" id="giftCode" placeholder="Nhập mã gift...">
-            <button id="pasteBtn" onclick="pasteGiftCode()">
-                <span>📋</span> Dán
-            </button>
-            <button id="submitBtn" onclick="addGift()">
-                <span>🎁</span> Nhập Gift
+            <button id="pasteAndSubmitBtn" onclick="pasteAndSubmitGift()">
+                <span>📋➡️🎁</span> Dán và gửi Gift
             </button>
         </div>
         <div id="message" class="message"></div>
@@ -185,7 +185,7 @@
         </div>
     </div>
 
-    <!-- Phần quản lý tài khoản (ĐÃ CẢI THIỆN GIAO DIỆN) -->
+    <!-- Phần quản lý tài khoản -->
     <div class="container">
         <h2 class="section-title">Quản lý Tài khoản</h2>
         <button onclick="getAvailableAccount()" style="margin-bottom: 20px;">
@@ -230,73 +230,72 @@
     <script>
         // Biến lưu trữ thông tin tài khoản hiện tại
         let currentAccount = null;
+        let isProcessing = false;
         
-        // ========== PHẦN GIFT CODE (GIỮ NGUYÊN NHƯ BẢN GỐC) ==========
-        async function pasteGiftCode() {
-            try {
-                const text = await navigator.clipboard.readText();
-                document.getElementById('giftCode').value = text.trim();
-                document.getElementById('error').textContent = '';
-            } catch (err) {
-                document.getElementById('error').textContent = 'Không thể đọc clipboard';
-                console.error('Lỗi khi dán:', err);
-            }
-        }
-
-        function addGift() {
-            const giftCode = document.getElementById('giftCode').value.trim();
+        // ========== PHẦN GIFT CODE ==========
+        async function pasteAndSubmitGift() {
+            if (isProcessing) return;
+            
+            const giftCodeInput = document.getElementById('giftCode');
             const messageDiv = document.getElementById('message');
             const errorDiv = document.getElementById('error');
             const loadingDiv = document.getElementById('giftLoading');
             
+            // Reset trạng thái
             messageDiv.textContent = '';
             errorDiv.textContent = '';
             messageDiv.style.display = 'none';
             errorDiv.style.display = 'none';
             loadingDiv.style.display = 'block';
             
-            if (!giftCode) {
-                errorDiv.textContent = 'Vui lòng nhập mã gift!';
-                errorDiv.style.display = 'block';
-                loadingDiv.style.display = 'none';
-                return;
-            }
-            
-            messageDiv.textContent = 'Đang xử lý...';
-            messageDiv.style.display = 'block';
-            
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec';
-            
-            fetch(scriptUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({code: giftCode}),
-            })
-            .then(response => {
-                messageDiv.textContent = 'Tiền đã về...';
+            isProcessing = true;
+            try {
+                // Bước 1: Dán nội dung từ clipboard
+                const text = await navigator.clipboard.readText();
+                const giftCode = text.trim();
+                
+                if (!giftCode) {
+                    throw new Error('Clipboard không có nội dung');
+                }
+                
+                giftCodeInput.value = giftCode;
+                
+                // Bước 2: Tự động gửi gift code
+                const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0QaWU57qAN7Tkoi0qQ8FdwU3vBWZF814YDjZG_YQ_Tfc6v_AM66LOok7FYU4m6Yh4jQ/exec';
+                
+                await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({code: giftCode}),
+                });
+                
+                messageDiv.textContent = 'Đã dán và gửi gift code thành công!';
                 messageDiv.style.display = 'block';
-                document.getElementById('giftCode').value = '';
-            })
-            .catch(error => {
-                errorDiv.textContent = 'Lỗi khi gửi yêu cầu';
+                giftCodeInput.value = '';
+            } catch (err) {
+                console.error('Lỗi:', err);
+                errorDiv.textContent = err.message || 'Lỗi khi dán và gửi gift code';
                 errorDiv.style.display = 'block';
-                console.error('Error:', error);
-            })
-            .finally(() => {
+                
+                // Nếu lỗi ở bước dán, vẫn cho phép nhập thủ công
+                giftCodeInput.focus();
+            } finally {
                 loadingDiv.style.display = 'none';
-            });
+                isProcessing = false;
+            }
         }
         
+        // Sự kiện nhấn Enter trong ô input
         document.getElementById('giftCode').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                addGift();
+                pasteAndSubmitGift();
             }
         });
         
-        // ========== PHẦN TÀI KHOẢN (CẢI THIỆN UX) ==========
+        // ========== PHẦN TÀI KHOẢN ==========
         function showCopyNotification(text) {
             const notification = document.getElementById('copyNotification');
             notification.textContent = `Đã sao chép ${text}`;
