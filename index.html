@@ -10,11 +10,23 @@
         body {
             margin: 0;
             padding: 0;
+            overflow: hidden; /* Ngăn chặn thanh cuộn không cần thiết */
+        }
+        html {
+            height: 100%; /* Đảm bảo html cũng chiếm toàn bộ chiều cao */
         }
         iframe {
             width: 100%;
-            height: 100vh;
+            height: 100vh; /* Chiếm toàn bộ chiều cao viewport */
             border: none;
+            display: block; /* Loại bỏ khoảng trắng thừa dưới iframe */
+        }
+
+        /* CSS cho màn hình nhỏ (ví dụ: điện thoại) */
+        @media (max-width: 768px) {
+            iframe {
+                height: 100vh; /* Đảm bảo iframe chiếm toàn bộ chiều cao viewport trên mobile */
+            }
         }
     </style>
 </head>
@@ -22,22 +34,3 @@
     <iframe src="https://www.appsheet.com/start/66bd69b9-e79a-40a7-87e9-ae6f98255c32" title="AppSheet App"></iframe>
 </body>
 </html>
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-    }
-    iframe {
-        width: 100%;
-        height: 100vh;
-        border: none;
-    }
-
-    /* CSS cho màn hình nhỏ (ví dụ: điện thoại) */
-    @media (max-width: 768px) {
-        iframe {
-            /* Điều chỉnh kích thước hoặc kiểu dáng iframe cho phù hợp */
-            height: 50vh; /* Ví dụ: giảm chiều cao của iframe */
-        }
-    }
-</style>
